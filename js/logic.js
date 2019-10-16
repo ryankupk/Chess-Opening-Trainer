@@ -1,11 +1,5 @@
 var chess = new Chess();
 
-while (!chess.game_over()) {
-  var moves = chess.moves();
-  var move = moves[Math.floor(Math.random() * moves.length)];
-  chess.move(move);
-}
-
 var board = null
 var game = new Chess()
 var $status = $('#status')
