@@ -1,8 +1,8 @@
-var chess = new Chess();
+let chess = new Chess();
 
-var board = null
-var game = new Chess()
-var $status = $('#status')
+let board = null
+let game = new Chess()
+let $status = $('#status')
 
 function onDragStart (source, piece, position, orientation) {
     // do not pick up pieces if the game is over
@@ -16,20 +16,31 @@ function onDragStart (source, piece, position, orientation) {
 }
 
 function onDrop (source, target, piece) {
-    var promotion = "q";
+    let promoteTo = "q";
     console.log(source, target, piece);
 
     //check if the piece is a pawn moving to the eighth rank
     //if so, the pawn has to promote. Present promotion window to select to which piece the pawn should promote
     if (/8/.test(target) && /P/.test(piece)) {
         console.log("promotion");
+        promoteTo = promotePiece(function(promoteTo) {
+
+            let move = game.move({
+                from: source,
+                to: target,
+                promotion: promoteTo
+            })
+
+            updateStatus();
+        });
+
+        return;
     }
 
     // attempt to make move
-    var move = game.move({
+    let move = game.move({
         from: source,
-        to: target,
-        promotion: promotion
+        to: target
     })
 
     // illegal move
@@ -45,9 +56,9 @@ function onSnapEnd () {
 }
 
 function updateStatus () {
-    var status = ''
+    let status = ''
 
-    var moveColor = 'White'
+    let moveColor = 'White'
     if (game.turn() === 'b') {
         moveColor = 'Black'
     }
@@ -75,7 +86,7 @@ function updateStatus () {
     $status.html(status)
 }
 
-var config = {
+let config = {
     draggable: true,
     position: 'start',
     onDragStart: onDragStart,

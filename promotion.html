@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.2/chess.js"></script>
+        <script src="./js/chessboard-1.0.0.min.js"></script>
+        
+        <link rel="stylesheet" href="css/chessboard-1.0.0.css">
+        <title>promotion test</title>
+        <style>
+            #promotionModal {
+                width: 9vw;
+                height: 9vw;
+                border: 3px solid black;
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="promotionModal">
+            <button id="queenButton" value="q" onclick="closeModal(this.value)"></button>
+            <button id="rookButton" value="r" onclick="closeModal(this.value)"></button>
+            <button id="knightButton" value="n" onclick="closeModal(this.value)"></button>
+            <button id="bishopButton" value="b" onclick="closeModal(this.value)"></button>
+        </div>
+        <div id="container">
+                <div id="select">
+                  <!-- Rectangular switch -->
+                  <label class="switch">
+                      <input type="checkbox">
+                      <span class="slider">text</span>
+                  </label>
+                </div>
+                <div id="myBoard"></div>
+                <div id="statusContainer">
+                  <label>Status:</label>
+                  <div id="status"></div>
+                </div>
+              </div>
+    </body>
+    <script src="js/logic.js" type="text/javascript"></script>
+    <script>
+    
+        function showModal() {
+            let $board = $("#myBoard");
+            let $modal = $("#promotionModal");
+            let w = $board.width();
+            let h = $board.height();
+
+            $modal.show();
+        }
+
+        function closeModal(value) {
+            let $modal = $("#promotionModal");
+            $modal.hide();
+            return value;
+        }
+
+        function promotePiece(callback) {
+            //assume promotion to queen
+            let promoteTo = "q";
+            //display modal
+            showModal();
+            //close modal
+            promoteTo = closeModal();
+            callback(promoteTo);
+        }
+
+    </script>
+</html>
