@@ -42,30 +42,30 @@
     </body>
     <script src="js/logic.js" type="text/javascript"></script>
     <script>
-    
-        function showModal() {
+
+        function closeModal(value) {
+            let $modal = $("#promotionModal");
+            $modal.hide();
+            // attempt to make move
+            let move = game.move({
+                from: promoteSource,
+                to: promoteTarget,
+                promotion: value
+            })
+
+            // illegal move
+            if (move === null) return 'snapback'
+
+            updateStatus();
+        }
+
+        function promotePiece() {
             let $board = $("#myBoard");
             let $modal = $("#promotionModal");
             let w = $board.width();
             let h = $board.height();
 
             $modal.show();
-        }
-
-        function closeModal(value) {
-            let $modal = $("#promotionModal");
-            $modal.hide();
-            return value;
-        }
-
-        function promotePiece(callback) {
-            //assume promotion to queen
-            let promoteTo = "q";
-            //display modal
-            showModal();
-            //close modal
-            promoteTo = closeModal();
-            callback(promoteTo);
         }
 
     </script>

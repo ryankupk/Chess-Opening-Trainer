@@ -1,8 +1,11 @@
 let chess = new Chess();
 
-let board = null
-let game = new Chess()
-let $status = $('#status')
+let board = null;
+let game = new Chess();
+let $status = $('#status');
+
+let promoteSource;
+let promoteTarget;
 
 function onDragStart (source, piece, position, orientation) {
     // do not pick up pieces if the game is over
@@ -16,23 +19,15 @@ function onDragStart (source, piece, position, orientation) {
 }
 
 function onDrop (source, target, piece) {
-    let promoteTo = "q";
     console.log(source, target, piece);
 
     //check if the piece is a pawn moving to the eighth rank
     //if so, the pawn has to promote. Present promotion window to select to which piece the pawn should promote
     if (/8/.test(target) && /P/.test(piece)) {
         console.log("promotion");
-        promoteTo = promotePiece(function(promoteTo) {
-
-            let move = game.move({
-                from: source,
-                to: target,
-                promotion: promoteTo
-            })
-
-            updateStatus();
-        });
+        promoteSource = source;
+        promoteTarget = target;
+        promotePiece();
 
         return;
     }
