@@ -1,0 +1,175 @@
+/*---------------------------custom---------------------------*/
+#container {
+    display: grid;
+    grid-row-gap: 2rem;
+    grid-template-columns: 3fr 1fr 1fr 1fr 3fr;
+    grid-template-rows: auto;
+    grid-template-areas: 
+    ". select   .    drop   ."
+    ". board  board  board  ."
+    ". status status status ."
+    ;
+  
+  }
+  
+  #myBoard {
+    grid-area: board;
+    /*todo: center board within div*/
+    /* justify-self: center; */
+  }
+  
+  #select {
+    grid-area: select;
+    justify-self: center;
+  }
+
+  #dropdown {
+      grid-area: drop;
+  }
+  
+  #statusContainer {
+    grid-area: status;
+  }
+  
+  /*---------------------------modal---------------------------*/
+  
+  #promotionModal {
+    display: none;
+  }
+  
+  .ui-dialog {
+    padding: 0 !important;
+    width: 92px !important;
+    border: 0 !important;
+  }
+  .ui-dialog-content {
+    padding: 0 !important;
+    width: 92px !important;
+    border: 0 !important;
+  }
+  .ui-corner-all {
+    border-radius: 0;
+  }
+  .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+    border: 0 !important;
+  }
+  #promoteOptions .ui-selecting {
+    background: #FECA40;
+  }
+  #promoteOptions .ui-selected {
+    background: #F39814;
+    color: white;
+  }
+  #promoteOptions {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 92px;
+    height: 92px;
+  }
+  #promoteOptions li {
+    margin: 0;
+    padding: 0;
+    width: 46px;
+    height: 46px;
+    cursor: pointer;
+    float: left !important;
+  }
+  .ui-dialog .ui-dialog-content {
+    padding: 0;
+  }
+  .no-close .ui-dialog-titlebar-close {
+    display: none;
+  }
+  .dialogClass .ui-dialog-titlebar {
+    display: none;
+  }
+  .promotion-piece {
+    width: 46px;
+    height: 46px;
+  }
+  .piece-name {
+    display: none;
+  }
+  
+  
+  
+  /*---------------------------slider---------------------------*/
+  
+  .mode {
+    color: white;
+    font-weight: 900;
+    width: 74px;
+    text-align: center;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  
+    /*disable selection of text*/
+    -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+  }
+  #learnText {
+    float: left;
+  }
+  #practiceText {
+    float: right;
+  }
+  
+  
+  /* The switch - the box around the slider */
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 148px;
+    height: 34px;
+  }
+  
+  /* Hide default HTML checkbox */
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  /* The slider */
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgb(9, 240, 39);
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 70px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  input:checked + .slider {
+    background-color: #2196F3;
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+  }
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(70px);
+    -ms-transform: translateX(70px);
+    transform: translateX(70px);
+  }

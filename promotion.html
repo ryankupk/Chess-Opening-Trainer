@@ -8,11 +8,14 @@
         <script src="./js/chessboard-1.0.0.min.js"></script>
         <script src="jquery-ui-1.12.1/jquery-ui.min.js"></script>
         
+        
+        <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="jquery-ui-1.12.1/jquery-ui.min.css">
         <link rel="stylesheet" href="jquery-ui-1.12.1/jquery-ui.structure.min.css">
         <link rel="stylesheet" href ="jquery-ui-1.12.1/jquery-ui.theme.min.css">
         <link rel="stylesheet" href="css/chessboard-1.0.0.css">
-        <title>promotion test</title>
+        <link rel="stylesheet" href="css/custom.css">
+        <title>Chess Opening Trainer</title>
     </head>
     <body>
         <div id="promotionModal">
@@ -24,20 +27,35 @@
             </ol>
         </div>
         <div id="container">
-            <div id="select">
-                <!-- Rectangular switch -->
-                <label class="switch">
-                    <input type="checkbox">
-                    <span class="slider">text</span>
-                </label>
-            </div>
+
+                <div id="select" >
+                        <!-- Rectangular switch -->
+                        <label class="switch">
+                            <input type="checkbox">
+                            <span class="slider" onclick="toggleState()">
+                                <div class="mode" id="learnText">Learn</div>
+                                <div class="mode" id="practiceText">Practice</div>
+                            </span>
+                        </label>
+                    </div>
+
+            <form>
+                <input class="chosen-value" type="text" value="" placeholder="Type to filter" id="dropdown">
+                    <ul class="value-list">
+                        
+                    </ul>
+            </form>
+
+            
             <div id="myBoard"></div>
             <div id="statusContainer">
                 <label>Status:</label>
                 <div id="status"></div>
+                <label>PGN:</label>
+                <div id="pgn"></div>
             </div>
             </div>
     </body>
     <script src="js/logic.js" type="text/javascript"></script>
-    
+    <script src="js/index.js"></script>
 </html>

@@ -1,3 +1,19 @@
+//variable to hold practice/learn state
+//true == practice; false == learn
+let state = true;
+function toggleState() {
+    //console.log(state ? "practice" : "learn" );
+    //toggle state
+    state = !state;
+    //reset board and game
+    game.reset();
+    board.position(game.fen());
+    //update status
+    updateStatus();
+    //deselect opening -- might not want to do this
+    
+}
+
 //variable to hold chessboard
 //only responsible for appearance, animations, etc.
 let board = null;
@@ -6,6 +22,8 @@ let board = null;
 let game = new Chess();
 //div that states white to move, black to move, etc.
 let $status = $('#status');
+//div for pgn
+var $pgn = $('#pgn')
 
 //objects which contain name, code and pgn for openings
 var objs = [];
@@ -17,9 +35,10 @@ var moveConfig;
 var promoting = false;
 //location of piece images
 var piece_theme = 'img/chesspieces/wikipedia/{piece}.png';
-//what piece is being promoted to
+//what piece a pawn will be promoted to
 var promote_to;
-                
+//variable to hold opening selected from dropdown
+var selectedOpening;
 
 
 function onDragStart (source, piece, position, orientation) {
@@ -40,14 +59,13 @@ function onModalClose() {
     game.move(moveConfig);
   }
 
+  //retrieve images for each piece for use promotion window
   function getImgSrc(piece) {
     return piece_theme.replace('{piece}', game.turn() + piece.toLocaleUpperCase());
   }
 
 
 function onDrop (source, target, piece) {
-    console.log(source, target, piece);
-
     //default configuration -- test if move is possible
     moveConfig = {
         from: source,
@@ -65,7 +83,7 @@ function onDrop (source, target, piece) {
     //check if the piece is a pawn moving to the first (black) or eighth (white) rank
     //if so, the pawn has to promote. Present promotion window to select to which piece the pawn should promote
     if ((/8/.test(target) && /7/.test(source) && /P/.test(piece)) || (/1/.test(target) && /2/.test(source) && /p/.test(piece))) {
-        console.log("promoting");
+        promoting = true;
 
         // get piece images
         $('.promotion-piece-q').attr('src', getImgSrc('q'));
@@ -89,7 +107,8 @@ function onDrop (source, target, piece) {
             at: "middle middle"
         });
 
-
+        //return after selection is made
+        //promotion and moving of piece is done in the stop function of the modal
         return;
     }
 
@@ -104,7 +123,6 @@ function onSnapEnd () {
     if (promoting) return;
     board.position(game.fen());
     updateStatus();
-    promoting = false;
 }
 
 function updateStatus () {
@@ -134,8 +152,10 @@ function updateStatus () {
             status += ', ' + moveColor + ' is in check'
         }
     }
-
+    //change status div to reflect current status
     $status.html(status)
+    //update pgn
+    $pgn.html(game.pgn())
 }
 
 let config = {
@@ -170,7 +190,8 @@ $("#promoteOptions").selectable({
 updateStatus();
 
 
-var openings_raw = `A00	Uncommon Opening
+var openings_raw = 
+`A00	Uncommon Opening
 1 g4, a3, h3, etc.
 A01	Nimzovich-Larsen Attack
 1 b3
@@ -1172,15 +1193,26 @@ E99	King's Indian, Orthodox, Taimanov
 1 d4 Nf6 2 c4 g6 3 Nc3 Bg7 4 e4 d6 5 Nf3 O-O 6 Be2 e5 7 O-O Nc6 8 d5 Ne7 9 Ne1 Nd7 10 f3 f5`
 
 function parseOpenings(openings) {
-   var lines = openings.split("\n");
-   var objs = [];
-   for (let i = 0; i < lines.length; i += 2) {
-      var cur = {};
-      cur.code = lines[i].substring(0, 3);
-      cur.name = lines[i].substring(4);
-      cur.PGN = lines[i+1];
-      objs.push(cur);
-   }
-   return objs;
+    //split raw openings into each line
+    //the first line will contain the code and name, the second line will contain the full pgn 
+    let lines = openings.split("\n");
+    let objs = [];
+    let $dropdown = $(".value-list");
+    for (let i = 0; i < lines.length; i += 2) {
+        //create object for current opening
+        let cur = {};
+        //set code and name for current object using current index in array
+        cur.code = lines[i].substring(0, 3);
+        cur.name = lines[i].substring(4);
+        //set pgn for current object using the next index in array
+        cur.PGN = lines[i+1];
+        //append object to object array
+        objs.push(cur);
+        let newElement = document.createElement("li");
+        newElement.innerHTML = cur.code + " | " + cur.name + " | " + cur.PGN;
+        $dropdown.append(newElement);
+    }
+    return objs;
 }
 objs = parseOpenings(openings_raw);
+JSON.stringify(objs);
