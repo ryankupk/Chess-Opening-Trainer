@@ -2,6 +2,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  text-align: center;
 }
 
 /* body {
@@ -30,7 +31,7 @@
 form {
   position: relative;
   width: 18rem;
-  margin-top: 8vh;
+  /* margin-top: 8vh; */
 }
 
 .chosen-value,

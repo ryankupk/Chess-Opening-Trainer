@@ -1,18 +1,8 @@
 //variable to hold practice/learn state
 //true == practice; false == learn
 let state = true;
-function toggleState() {
-    //console.log(state ? "practice" : "learn" );
-    //toggle state
-    state = !state;
-    //reset board and game
-    game.reset();
-    board.position(game.fen());
-    //update status
-    updateStatus();
-    //deselect opening -- might not want to do this
-    
-}
+//variable to hold current board orientation
+let currentOrientation = "white";
 
 //variable to hold chessboard
 //only responsible for appearance, animations, etc.
@@ -39,11 +29,39 @@ var piece_theme = 'img/chesspieces/wikipedia/{piece}.png';
 var promote_to;
 //variable to hold opening selected from dropdown
 var selectedOpening;
+//keep track of how many half moves have been made
+//starting at 0 to correctly index array of object
+var halfMoveNumber = 0;
+
+
+function toggleState() {
+    //console.log(state ? "practice" : "learn" );
+    //toggle state
+    state = !state;
+    //reset board and game
+    game.reset();
+    board.position(game.fen());
+    //update status
+    updateStatus();
+    //deselect opening -- might not want to do this
+    
+}
+
+function changeOrientation() {
+    //reset game
+    game.reset();
+    board.position(game.fen8());
+    //(╯°□°)╯︵ ┻━┻
+    board.flip();
+    updateStatus();
+}
 
 
 function onDragStart (source, piece, position, orientation) {
     // do not pick up pieces if the game is over
     if (game.game_over()) return false
+    // do not pick up pieces if an opening has not been selected.
+    if (selectedOpening == null) return false;
 
     // only pick up pieces for the side to move
     if ((game.turn() === 'w' && piece.search(/^b/) !== -1) ||
@@ -64,8 +82,19 @@ function onModalClose() {
     return piece_theme.replace('{piece}', game.turn() + piece.toLocaleUpperCase());
   }
 
+function makeMove() {
+    //check for black or white here?
+
+    let selectedPGN = selectedOpening.PGN;
+    let currentPGN = game.pgn();
+    //find move for black
+    //maybe will need to do the same for white depending on board orientation
+
+}
 
 function onDrop (source, target, piece) {
+    //TODO: somewhere in here the move will need to be tested to make sure it's the correct one for the practice state
+    //if ()
     //default configuration -- test if move is possible
     moveConfig = {
         from: source,
@@ -115,6 +144,10 @@ function onDrop (source, target, piece) {
     //if not promoting, make move as normal and update status
     game.move(moveConfig);
     updateStatus();
+
+    if (state) {
+        window.setTimeout(makeMove, 250)
+    }
 }
 
 // update the board position after the piece snap
@@ -158,6 +191,39 @@ function updateStatus () {
     $pgn.html(game.pgn())
 }
 
+function parseOpenings(openings) {
+    //split raw openings into each line
+    //the first line will contain the code and name, the second line will contain the full pgn 
+    let lines = openings.split("\n");
+    let objs = [];
+    let $dropdown = $(".value-list");
+    for (let i = 0; i < /*lines.length*/6; i += 2) {
+        //create object for current opening
+        let cur = {};
+        //set code and name for current object using current index in array
+        cur.code = lines[i].substring(0, 3);
+        cur.name = lines[i].substring(4);
+        //set pgn for current object using the next index in array
+        cur.PGN = lines[i+1];
+        //break pgn into moves
+        let splitPGN = cur.PGN.split(" ");
+        //create parsed PGN array
+        cur.PGNArray = [];
+        //TODO: find sequence to skip every third number
+        //or stop being stupid
+        for (let i = 1; i < splitPGN.length; i = (i + 1) %) {
+            if (splitPGN[i].length != 1) cur.PGNArray.push(splitPGN[i]);
+        }
+        //append object to object array
+        objs.push(cur);
+        //add elements to dropdown menu
+        let newElement = document.createElement("li");
+        newElement.innerHTML = cur.code + " | " + cur.name + " | " + cur.PGN;
+        $dropdown.append(newElement);
+    }
+    return objs;
+}
+
 let config = {
     draggable: true,
     position: 'start',
@@ -188,6 +254,8 @@ $("#promoteOptions").selectable({
   });
 
 updateStatus();
+
+
 
 
 var openings_raw = 
@@ -1192,27 +1260,4 @@ E98	King's Indian, Orthodox, Taimanov, 9.Ne1
 E99	King's Indian, Orthodox, Taimanov
 1 d4 Nf6 2 c4 g6 3 Nc3 Bg7 4 e4 d6 5 Nf3 O-O 6 Be2 e5 7 O-O Nc6 8 d5 Ne7 9 Ne1 Nd7 10 f3 f5`
 
-function parseOpenings(openings) {
-    //split raw openings into each line
-    //the first line will contain the code and name, the second line will contain the full pgn 
-    let lines = openings.split("\n");
-    let objs = [];
-    let $dropdown = $(".value-list");
-    for (let i = 0; i < lines.length; i += 2) {
-        //create object for current opening
-        let cur = {};
-        //set code and name for current object using current index in array
-        cur.code = lines[i].substring(0, 3);
-        cur.name = lines[i].substring(4);
-        //set pgn for current object using the next index in array
-        cur.PGN = lines[i+1];
-        //append object to object array
-        objs.push(cur);
-        let newElement = document.createElement("li");
-        newElement.innerHTML = cur.code + " | " + cur.name + " | " + cur.PGN;
-        $dropdown.append(newElement);
-    }
-    return objs;
-}
 objs = parseOpenings(openings_raw);
-JSON.stringify(objs);

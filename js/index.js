@@ -37,7 +37,16 @@ inputField.addEventListener('input', function () {
 
 dropdownItems.forEach(function (item) {
   item.addEventListener('click', function (evt) {
-    inputField.value = item.textContent;
+    let currentString = item.textContent;
+    inputField.value = currentString;
+    //initialize selectedOpening variable with proper opening
+    for (let i = 0; i < objs.length; i++) {
+      //match first three characters with code of object to know which opening object was selected
+      if (currentString.substring(0, 3) == objs[i].code) {
+        selectedOpening = objs[i];
+        break;
+      }
+    }
     dropdownItems.forEach(function (dropdown) {
       dropdown.classList.add('closed');
     });
