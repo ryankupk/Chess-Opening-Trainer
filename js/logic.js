@@ -28,29 +28,32 @@ var piece_theme = 'img/chesspieces/wikipedia/{piece}.png';
 //what piece a pawn will be promoted to
 var promote_to;
 //variable to hold opening selected from dropdown
-var selectedOpening;
+var selectedOpening = null;
 //keep track of how many half moves have been made
 //starting at 0 to correctly index array of object
 var halfMoveNumber = 0;
 
+function resetGame() {
+    game.reset();
+    board.position(game.fen());
+    halfMoveNumber = 0;
+    updateStatus();
+}
 
 function toggleState() {
     //console.log(state ? "practice" : "learn" );
     //toggle state
     state = !state;
     //reset board and game
-    game.reset();
-    board.position(game.fen());
-    //update status
-    updateStatus();
-    //deselect opening -- might not want to do this
-    
+    resetGame();
+    //deselect opening in list -- might not want to do this
+    //reset selectedOpening variable
+    //selectedOpening = null;
 }
 
 function changeOrientation() {
     //reset game
-    game.reset();
-    board.position(game.fen8());
+    resetGame();
     //(╯°□°)╯︵ ┻━┻
     board.flip();
     updateStatus();
@@ -62,6 +65,9 @@ function onDragStart (source, piece, position, orientation) {
     if (game.game_over()) return false
     // do not pick up pieces if an opening has not been selected.
     if (selectedOpening == null) return false;
+
+    // do not pick up pieces if user is in learn mode
+    if (!state) return false;
 
     // only pick up pieces for the side to move
     if ((game.turn() === 'w' && piece.search(/^b/) !== -1) ||
@@ -90,6 +96,28 @@ function makeMove() {
     //find move for black
     //maybe will need to do the same for white depending on board orientation
 
+}
+
+function nextMove() {
+    //only attempt move if halfMoveNumber is less than the length of the current opening
+    //make move and increment halfMoveNumber
+    if (halfMoveNumber < selectedOpening.PGNArray.length) game.move(selectedOpening.PGNArray[halfMoveNumber++]);
+    //reflect move on board
+    board.position(game.fen());
+    //update status
+    updateStatus();
+}
+
+function previousMove() {
+    //undo last move
+    //this will always work because the PGN is being followed sequentially
+    game.undo();
+    //reflect move on board
+    board.position(game.fen());
+    //decrement halfMoveNumber so as to accurately reflect which half move is next
+    --halfMoveNumber;
+    //update status
+    updateStatus();
 }
 
 function onDrop (source, target, piece) {
@@ -197,7 +225,7 @@ function parseOpenings(openings) {
     let lines = openings.split("\n");
     let objs = [];
     let $dropdown = $(".value-list");
-    for (let i = 0; i < /*lines.length*/6; i += 2) {
+    for (let i = 0; i < /*lines.length*/15; i += 2) {
         //create object for current opening
         let cur = {};
         //set code and name for current object using current index in array
@@ -211,11 +239,13 @@ function parseOpenings(openings) {
         cur.PGNArray = [];
         //TODO: find sequence to skip every third number
         //or stop being stupid
-        for (let i = 1; i < splitPGN.length; i = (i + 1) %) {
+        //for (let i = 1; i < splitPGN.length; i = (i + 1) %) {
+        for (let i = 0; i < splitPGN.length; ++i) {
             if (splitPGN[i].length != 1) cur.PGNArray.push(splitPGN[i]);
         }
         //append object to object array
         objs.push(cur);
+
         //add elements to dropdown menu
         let newElement = document.createElement("li");
         newElement.innerHTML = cur.code + " | " + cur.name + " | " + cur.PGN;

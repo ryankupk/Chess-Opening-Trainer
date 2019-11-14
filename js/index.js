@@ -37,6 +37,9 @@ inputField.addEventListener('input', function () {
 
 dropdownItems.forEach(function (item) {
   item.addEventListener('click', function (evt) {
+    //reset game
+    resetGame();
+    //set input field value to selected opening
     let currentString = item.textContent;
     inputField.value = currentString;
     //initialize selectedOpening variable with proper opening

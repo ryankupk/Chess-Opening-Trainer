@@ -21,6 +21,7 @@
   #select {
     grid-area: select;
     justify-self: center;
+    align-items: center;
   }
 
   #perspective {
