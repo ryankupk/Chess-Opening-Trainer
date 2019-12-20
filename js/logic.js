@@ -31,7 +31,7 @@ var promote_to;
 var selectedOpening = null;
 //keep track of how many half moves have been made
 //starting at 0 to correctly index array of object
-var halfMoveNumber = 0;
+var halfMoveNumber = 0 >>>0;
 
 function resetGame() {
     game.reset();
@@ -41,11 +41,12 @@ function resetGame() {
 }
 
 function toggleState() {
-    //console.log(state ? "practice" : "learn" );
     //toggle state
     state = !state;
     //reset board and game
     resetGame();
+    //reset to first move
+    halfMoveNumber = 0;
     //deselect opening in list -- might not want to do this
     //reset selectedOpening variable
     //selectedOpening = null;
@@ -91,7 +92,13 @@ function onModalClose() {
 function makeMove() {
     //check for black or white here?
 
-    let selectedPGN = selectedOpening.PGN;
+    //don't make a move if there are none left
+    if (halfMoveNumber == selectedOpening.PGNArray.length) return;
+    else {
+        game.move(selectedOpening.PGNArray[halfMoveNumber++]);
+        board.position(game.fen());
+        updateStatus();
+    }
     let currentPGN = game.pgn();
     //find move for black
     //maybe will need to do the same for white depending on board orientation
@@ -99,9 +106,10 @@ function makeMove() {
 }
 
 function nextMove() {
+    if (state) return;
     //only attempt move if halfMoveNumber is less than the length of the current opening
     //make move and increment halfMoveNumber
-    if (halfMoveNumber < selectedOpening.PGNArray.length) game.move(selectedOpening.PGNArray[halfMoveNumber++]);
+    if (halfMoveNumber < selectedOpening.PGNArray.length && !state) game.move(selectedOpening.PGNArray[halfMoveNumber++]);
     //reflect move on board
     board.position(game.fen());
     //update status
@@ -109,9 +117,19 @@ function nextMove() {
 }
 
 function previousMove() {
+    if (halfMoveNumber == 0) return;
     //undo last move
     //this will always work because the PGN is being followed sequentially
     game.undo();
+    //if in practice mode, maybe undo twice
+    if (state) {
+        //move always needs to be undone twice if there are an even number of moves in the opening
+        //if there are an odd number, it should only be undone twice if it is not the last move
+        if (selectedOpening.PGNArray.length % 2 == 0 || (halfMoveNumber != selectedOpening.PGNArray.length)) {
+            game.undo();
+            --halfMoveNumber;
+        }
+    }
     //reflect move on board
     board.position(game.fen());
     //decrement halfMoveNumber so as to accurately reflect which half move is next
@@ -122,7 +140,6 @@ function previousMove() {
 
 function onDrop (source, target, piece) {
     //TODO: somewhere in here the move will need to be tested to make sure it's the correct one for the practice state
-    //if ()
     //default configuration -- test if move is possible
     moveConfig = {
         from: source,
@@ -134,8 +151,18 @@ function onDrop (source, target, piece) {
 
     // illegal move
     if (move === null) return 'snapback';
+
     //if snapback is not returned, move is fine. undo move to check for promotion state
     game.undo();
+
+    //don't allow wrong move to be made
+    let attemptedMove = piece[1] + target;
+    if (move.san != selectedOpening.PGNArray[halfMoveNumber]) {
+        //wrong move
+        return 'snapback';
+    }
+
+    
 
     //check if the piece is a pawn moving to the first (black) or eighth (white) rank
     //if so, the pawn has to promote. Present promotion window to select to which piece the pawn should promote
@@ -173,8 +200,12 @@ function onDrop (source, target, piece) {
     game.move(moveConfig);
     updateStatus();
 
-    if (state) {
-        window.setTimeout(makeMove, 250)
+    //increment half move number
+    ++halfMoveNumber;
+
+    //only make move black move if in practice mode and there are moves remaining for black
+    if (state && halfMoveNumber < selectedOpening.PGNArray.length) {
+        window.setTimeout(makeMove, 200)
     }
 }
 
@@ -225,7 +256,7 @@ function parseOpenings(openings) {
     let lines = openings.split("\n");
     let objs = [];
     let $dropdown = $(".value-list");
-    for (let i = 0; i < /*lines.length*/15; i += 2) {
+    for (let i = 0; i < lines.length; i += 2) {
         //create object for current opening
         let cur = {};
         //set code and name for current object using current index in array
@@ -237,11 +268,10 @@ function parseOpenings(openings) {
         let splitPGN = cur.PGN.split(" ");
         //create parsed PGN array
         cur.PGNArray = [];
-        //TODO: find sequence to skip every third number
-        //or stop being stupid
-        //for (let i = 1; i < splitPGN.length; i = (i + 1) %) {
-        for (let i = 0; i < splitPGN.length; ++i) {
-            if (splitPGN[i].length != 1) cur.PGNArray.push(splitPGN[i]);
+        
+        //push moves but not move numbers to PGNArray
+        for (let i = 1; i < splitPGN.length; i += (++i % 3 == 0 ? 2 : 1)) {
+            cur.PGNArray.push(splitPGN[i]);
         }
         //append object to object array
         objs.push(cur);
@@ -286,7 +316,19 @@ $("#promoteOptions").selectable({
 updateStatus();
 
 
-
+var selected_openings =
+`A01	Nimzovich-Larsen Attack
+1 b3
+A06	Reti Opening
+1 Nf3 d5
+A14	English
+1 c4 e6 2 Nf3 d5 3 g3 Nf6 4 Bg2 Be7 5 O-O
+A19	English, Mikenas-Carls, Sicilian Variation
+1 c4 Nf6 2 Nc3 e6 3 e4 c5
+A65	Benoni, 6.e4
+1 d4 Nf6 2 c4 c5 3 d5 e6 4 Nc3 exd5 5 cxd5 d6 6 e4
+E99	King's Indian, Orthodox, Taimanov
+1 d4 Nf6 2 c4 g6 3 Nc3 Bg7 4 e4 d6 5 Nf3 O-O 6 Be2 e5 7 O-O Nc6 8 d5 Ne7 9 Ne1 Nd7 10 f3 f5`
 
 var openings_raw = 
 `A00	Uncommon Opening
@@ -1290,4 +1332,4 @@ E98	King's Indian, Orthodox, Taimanov, 9.Ne1
 E99	King's Indian, Orthodox, Taimanov
 1 d4 Nf6 2 c4 g6 3 Nc3 Bg7 4 e4 d6 5 Nf3 O-O 6 Be2 e5 7 O-O Nc6 8 d5 Ne7 9 Ne1 Nd7 10 f3 f5`
 
-objs = parseOpenings(openings_raw);
+objs = parseOpenings(selected_openings);
