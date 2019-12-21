@@ -1332,4 +1332,4 @@ E98	King's Indian, Orthodox, Taimanov, 9.Ne1
 E99	King's Indian, Orthodox, Taimanov
 1 d4 Nf6 2 c4 g6 3 Nc3 Bg7 4 e4 d6 5 Nf3 O-O 6 Be2 e5 7 O-O Nc6 8 d5 Ne7 9 Ne1 Nd7 10 f3 f5`
 
-objs = parseOpenings(selected_openings);
+objs = parseOpenings(openings_raw);
