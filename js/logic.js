@@ -1,8 +1,9 @@
 //variable to hold practice/learn state
-//true == practice; false == learn
-let state = true;
+//true == practice; false == learn - learn by default
+let state = false;
 //variable to hold current board orientation
-let currentOrientation = "white";
+//true == white false == black
+let currentOrientation = true;
 
 //variable to hold chessboard
 //only responsible for appearance, animations, etc.
@@ -31,7 +32,7 @@ var promote_to;
 var selectedOpening = null;
 //keep track of how many half moves have been made
 //starting at 0 to correctly index array of object
-var halfMoveNumber = 0 >>>0;
+var halfMoveNumber = 0;
 
 function resetGame() {
     game.reset();
@@ -47,9 +48,11 @@ function toggleState() {
     resetGame();
     //reset to first move
     halfMoveNumber = 0;
-    //deselect opening in list -- might not want to do this
-    //reset selectedOpening variable
-    //selectedOpening = null;
+    
+
+    if (!currentOrientation && state) {
+        makeMove();
+    }
 }
 
 function changeOrientation() {
@@ -57,6 +60,12 @@ function changeOrientation() {
     resetGame();
     //(╯°□°)╯︵ ┻━┻
     board.flip();
+    //change current orientation
+    currentOrientation = !currentOrientation;
+    //if player has already selected an opening, is switching to black, and is practicing, make the first move for white
+    if (selectedOpening != null && !currentOrientation && state) {
+        makeMove();
+    }
     updateStatus();
 }
 
@@ -71,8 +80,8 @@ function onDragStart (source, piece, position, orientation) {
     if (!state) return false;
 
     // only pick up pieces for the side to move
-    if ((game.turn() === 'w' && piece.search(/^b/) !== -1) ||
-        (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
+    if ((game.turn() === 'w' && piece.search(/^b/) !== -1 && currentOrientation) ||
+        (game.turn() === 'b' && piece.search(/^w/) !== -1 && !currentOrientation)) {
             return false
     }
 }
@@ -109,7 +118,8 @@ function nextMove() {
     if (state) return;
     //only attempt move if halfMoveNumber is less than the length of the current opening
     //make move and increment halfMoveNumber
-    if (halfMoveNumber < selectedOpening.PGNArray.length && !state) game.move(selectedOpening.PGNArray[halfMoveNumber++]);
+    if (halfMoveNumber < selectedOpening.PGNArray.length && !state) 
+        game.move(selectedOpening.PGNArray[halfMoveNumber++]);
     //reflect move on board
     board.position(game.fen());
     //update status
@@ -117,7 +127,9 @@ function nextMove() {
 }
 
 function previousMove() {
-    if (halfMoveNumber == 0) return;
+    //if on 0th move as white, don't go back
+    //if on 1st move as black while practicing, don't go back (white has to make first move)
+    if (halfMoveNumber == 0 || (!currentOrientation && halfMoveNumber == 1 && state)) return;
     //undo last move
     //this will always work because the PGN is being followed sequentially
     game.undo();
@@ -125,7 +137,7 @@ function previousMove() {
     if (state) {
         //move always needs to be undone twice if there are an even number of moves in the opening
         //if there are an odd number, it should only be undone twice if it is not the last move
-        if (selectedOpening.PGNArray.length % 2 == 0 || (halfMoveNumber != selectedOpening.PGNArray.length)) {
+        if ((selectedOpening.PGNArray.length % 2 == 0) || (halfMoveNumber != selectedOpening.PGNArray.length) || (!currentOrientation)) {
             game.undo();
             --halfMoveNumber;
         }
@@ -139,7 +151,6 @@ function previousMove() {
 }
 
 function onDrop (source, target, piece) {
-    //TODO: somewhere in here the move will need to be tested to make sure it's the correct one for the practice state
     //default configuration -- test if move is possible
     moveConfig = {
         from: source,

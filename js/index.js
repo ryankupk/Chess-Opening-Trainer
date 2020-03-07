@@ -70,6 +70,7 @@ inputField.addEventListener('blur', function () {
 });
 
 document.addEventListener('click', function (evt) {
+  
   var isDropdown = dropdown.contains(evt.target);
   var isInput = inputField.contains(evt.target);
   if (!isDropdown && !isInput) {
