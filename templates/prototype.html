@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.2/chess.js"></script>
+        
+        <script src="{{ url_for('static', filename='js/chessboard-1.0.0.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/chessboard-1.0.0.js') }}"></script>
+        <script src="{{ url_for('static', filename='css/jquery-ui-1.12.1/jquery-ui.min.js') }}"></script>
+        
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery-ui-1.12.1/jquery-ui.min.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery-ui-1.12.1/jquery-ui.structure.min.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery-ui-1.12.1/jquery-ui.theme.min.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/chessboard-1.0.0.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+        <title>Chess Opening Trainer</title>
+    </head>
+    <body>
+        
+        <div id="container">
+
+            <div id="select" >
+                <!-- Rectangular switch -->
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider" onclick="toggleState()">
+                        <div class="mode" id="learnText">Learn</div>
+                        <div class="mode" id="practiceText">Practice</div>
+                    </span>
+                </label>
+            </div>
+
+            <div id="perspective" >
+                <!-- Rectangular switch -->
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider" onclick="changeOrientation()">
+                        <div class="mode" id="white">White</div>
+                        <div class="mode" id="black">Black</div>
+                    </span>
+                </label>
+            </div>
+
+            <div id="dropdownContainer">
+                <form>
+                    <input class="chosen-value" type="text" value="" placeholder="Type to filter" id="dropdown">
+                        <ul class="value-list">
+                            
+                        </ul>
+                </form>
+            </div>
+            
+            <div id="myBoard"></div>
+
+            
+
+
+            <div id="statusContainer">
+                <label>Status:</label>
+                <div id="status"></div>
+                <label>PGN:</label>
+                <div id="pgn"></div>
+            </div>
+
+            <div id="forwardButton"><a href="javascript:;" onclick="setTimeout(previousMove, 100)" class="previous round">&#8249;</a></div>
+            <div id="backButton"><a href="javascript:;" onclick="setTimeout(nextMove, 100)" class="next round">&#8250;</a></div>
+
+        </div>
+    </body>
+    <script src="{{ url_for('static', filename='js/logic.js') }}"></script>
+    
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+</html>
