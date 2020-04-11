@@ -327,7 +327,7 @@ let config = {
     pieceTheme: piece_theme
 }
 
-board = Chessboard('myBoard', config);
+board = Chessboard('myBoard', config); 
 
 // init promotion piece dialog
 $("#promoteOptions").selectable({
