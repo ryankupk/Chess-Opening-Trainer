@@ -1,8 +1,5 @@
-<<<<<<< HEAD
 //socket variable
 var socket;
-=======
->>>>>>> fd66a7af18ecd4433e5cbadc34292575632461a4
 //variable to hold practice/learn state
 //true == practice; false == learn - learn by default
 let state = false;
@@ -40,7 +37,6 @@ var selectedOpening = null;
 //starting at 0 to correctly index array of object
 var halfMoveNumber = 0;
 
-<<<<<<< HEAD
 
 $(document).ready(() => {
     socket = io.connect('http://127.0.0.1:5000');
@@ -51,13 +47,10 @@ $(document).ready(() => {
 
 });
 
-=======
->>>>>>> fd66a7af18ecd4433e5cbadc34292575632461a4
 function resetGame() {
     game.reset();
     board.position(game.fen());
     halfMoveNumber = 0;
-<<<<<<< HEAD
     $("#analysis").text("Analysis...");
     $.ajax( 
         {
@@ -65,8 +58,6 @@ function resetGame() {
             type: 'POST'
         }
     );
-=======
->>>>>>> fd66a7af18ecd4433e5cbadc34292575632461a4
     updateStatus();
 }
 
@@ -233,10 +224,6 @@ function onDrop (source, target, piece) {
 
         //return after selection is made
         //promotion and moving of piece is done in the stop function of the modal
-<<<<<<< HEAD
-
-=======
->>>>>>> fd66a7af18ecd4433e5cbadc34292575632461a4
         return;
     }
 
@@ -249,15 +236,10 @@ function onDrop (source, target, piece) {
 
     //only make move black move if in practice mode and there are moves remaining for black
     if (state && halfMoveNumber < selectedOpening.PGNArray.length) {
-<<<<<<< HEAD
         makeMove();
     }
     
     socket.send(game.fen());
-=======
-        window.setTimeout(makeMove, 200)
-    }
->>>>>>> fd66a7af18ecd4433e5cbadc34292575632461a4
 }
 
 // update the board position after the piece snap
@@ -344,11 +326,7 @@ let config = {
     pieceTheme: piece_theme
 }
 
-<<<<<<< HEAD
 board = Chessboard('myBoard', config); 
-=======
-board = Chessboard('myBoard', config);
->>>>>>> fd66a7af18ecd4433e5cbadc34292575632461a4
 
 // init promotion piece dialog
 $("#promoteOptions").selectable({
