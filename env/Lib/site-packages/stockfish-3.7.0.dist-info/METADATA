@@ -1,0 +1,89 @@
+Metadata-Version: 2.1
+Name: stockfish
+Version: 3.7.0
+Summary: Wraps the open-source Stockfish chess engine for easy integration into python.
+Home-page: https://github.com/zhelyabuzhsky/stockfish
+Author: Ilya Zhelyabuzhsky
+Author-email: zhelyabuzhsky@icloud.com
+License: MIT
+Keywords: chess stockfish
+Platform: UNKNOWN
+Classifier: Programming Language :: Python
+Classifier: Operating System :: Unix
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Topic :: Games/Entertainment :: Board Games
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Programming Language :: Python :: 3.7
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+
+# Stockfish
+Implements an easy-to-use Stockfish class to integrates the Stockfish chess engine with Python.
+
+## Install
+```bash
+$ pip install stockfish
+```
+
+#### Ubuntu or Debian
+```bash
+# apt install stockfish
+``` 
+
+#### Mac OS
+```bash
+$ brew install stockfish
+```
+
+## Features
+- set current position
+- get best move
+- change engine's skill level
+- get current engine's parameters
+
+## Usage
+
+```python
+from stockfish import Stockfish
+
+# you should install the stockfish engine in your operating system globally or specify path to binary file in class constructor
+stockfish = Stockfish('/Users/zhelyabuzhsky/Work/stockfish/stockfish-9-64')
+
+# set position by sequence of moves:
+stockfish.set_position(['e2e4', 'e7e6'])
+
+# set position by Forsyth–Edwards Notation (FEN):
+stockfish.set_fen_position("rnbqkbnr/pppp1ppp/4p3/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2")
+
+print(stockfish.get_best_move()) # d2d4
+print(stockfish.is_move_correct('a2a3')) # True
+
+# get last move info:
+print(stockfish.info)
+# e.g. 'info depth 2 seldepth 3 multipv 1 score mate -1 nodes 11 nps 5500 tbhits 0 time 2 pv h2g1 h4g3'
+
+# set current engine's skill level:
+stockfish.set_skill_level(15)
+
+# get current engine's parameters:
+stockfish.get_parameters()
+```
+
+## Testing
+
+```bash
+$ python setup.py test
+```
+
+## Security
+If you discover any security related issues, please email zhelyabuzhsky@icloud.com instead of using the issue tracker.
+
+## Credits
+- [Ilya Zhelyabuzhsky](https://github.com/zhelyabuzhsky)
+- [All Contributors](../../contributors)
+
+## License
+MIT License. Please see [License File](LICENSE) for more information.
+
+
