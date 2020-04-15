@@ -236,7 +236,7 @@ function onDrop (source, target, piece) {
 
     //only make move black move if in practice mode and there are moves remaining for black
     if (state && halfMoveNumber < selectedOpening.PGNArray.length) {
-        makeMove();
+        window.setTimeout(makeMove, 150);
     }
     
     socket.send(game.fen());
@@ -323,7 +323,11 @@ let config = {
     onDragStart: onDragStart,
     onDrop: onDrop,
     onSnapEnd: onSnapEnd,
-    pieceTheme: piece_theme
+    pieceTheme: piece_theme,
+    // appearSpeed: 'slow',
+    moveSpeed: 150,//,
+    // snapbackSpeed: 'slow',
+    snapSpeed: 5
 }
 
 board = Chessboard('myBoard', config); 
