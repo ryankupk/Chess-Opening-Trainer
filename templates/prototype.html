@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
 
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.2/chess.js"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js"></script>
 
@@ -67,8 +67,8 @@
                 <div id="pgn"></div>
             </div>
 
-            <div id="forwardButton"><a href="javascript:;" onclick="setTimeout(previousMove, 100)" class="previous round">&#8249;</a></div>
-            <div id="backButton"><a href="javascript:;" onclick="setTimeout(nextMove, 100)" class="next round">&#8250;</a></div>
+            <div id="forwardButton"><a href="javascript:;" onclick="previousMove()" class="previous round">&#8249;</a></div>
+            <div id="backButton"><a href="javascript:;" onclick="nextMove()" class="next round">&#8250;</a></div>
 
         </div>
     </body>
