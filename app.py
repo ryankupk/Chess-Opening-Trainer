@@ -5,7 +5,7 @@ from flask_socketio import SocketIO, send
 from flask import Flask, render_template, url_for, jsonify, request
 
 
-stockfish = Stockfish("stockfish_20011801_x64")
+stockfish = Stockfish("/home/ChessOpeningTrainer/Chess-Opening-Trainer/stockfish_20011801_x64")
 stockfish.set_position("startpos")
 
 
@@ -47,7 +47,7 @@ def printAnalysis(fen):
         else:
             socketio.send(str(int(curLine[9]) / 100))
 
-app.run(debug=True)
+# app.run(debug=True)
 
 if __name__ == '__main__':
     socketio.run(app)
