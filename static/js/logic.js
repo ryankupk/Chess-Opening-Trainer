@@ -355,20 +355,6 @@ $("#promoteOptions").selectable({
 updateStatus();
 
 
-var selected_openings =
-`A01	Nimzovich-Larsen Attack
-1 b3
-A06	Reti Opening
-1 Nf3 d5
-A14	English
-1 c4 e6 2 Nf3 d5 3 g3 Nf6 4 Bg2 Be7 5 O-O
-A19	English, Mikenas-Carls, Sicilian Variation
-1 c4 Nf6 2 Nc3 e6 3 e4 c5
-A65	Benoni, 6.e4
-1 d4 Nf6 2 c4 c5 3 d5 e6 4 Nc3 exd5 5 cxd5 d6 6 e4
-E99	King's Indian, Orthodox, Taimanov
-1 d4 Nf6 2 c4 g6 3 Nc3 Bg7 4 e4 d6 5 Nf3 O-O 6 Be2 e5 7 O-O Nc6 8 d5 Ne7 9 Ne1 Nd7 10 f3 f5`
-
 var openings_raw = 
 `A00	Uncommon Opening
 1 g4, a3, h3, etc.
